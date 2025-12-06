@@ -1,0 +1,5 @@
+{
+  "name": "TubeGenius AI",
+  "description": "An intelligent YouTube video analyzer and downloader interface powered by Gemini 2.5. Extract metadata, summarize content, and simulate download workflows with a modern, responsive UI.",
+  "requestFramePermissions": []
+}
