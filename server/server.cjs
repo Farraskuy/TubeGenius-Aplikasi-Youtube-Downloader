@@ -2,10 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 8080; // Use PORT env var for Render/Fly
 
 const ytDlpPath = path.join(__dirname, 'yt-dlp');
+const cookiesPath = path.join(__dirname, '../cookies.txt');
 
 app.use(cors({
     exposedHeaders: ['Content-Disposition'],
@@ -15,10 +17,30 @@ app.use(express.json());
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../dist')));
 
+const getBaseArgs = () => {
+    const args = [
+        '--no-warnings', 
+        '--no-playlist',
+        '--force-ipv4', // Force IPv4 to avoid some blocks
+        '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    ];
+    
+    // Check if cookies.txt exists in the root directory
+    if (fs.existsSync(cookiesPath)) {
+        console.log('[Server] Cookies file found, using it.');
+        args.push('--cookies', cookiesPath);
+    } else {
+        console.log('[Server] No cookies.txt found.');
+    }
+    
+    return args;
+};
+
 const getVideoInfo = (url) => {
     return new Promise((resolve, reject) => {
-        // Add --no-warnings and --no-playlist for optimization
-        const process = spawn(ytDlpPath, ['--dump-single-json', '--no-warnings', '--no-playlist', url]);
+        const args = ['--dump-single-json', ...getBaseArgs(), url];
+        
+        const process = spawn(ytDlpPath, args);
         let data = '';
         let error = '';
 
@@ -161,6 +183,7 @@ app.get('/api/download', async (req, res) => {
         const args = [
             url,
             '-o', '-',
+            ...getBaseArgs(), // Use base args including cookies/UA
             ...formatArgs
         ];
         
@@ -222,7 +245,7 @@ const formatDuration = (seconds) => {
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
-    console.log('TubeGenius Server v2.1 - Express 5 Fix Applied');
+    console.log('TubeGenius Server v2.2 - Anti-Bot Measures Applied');
 });
 
 process.on('uncaughtException', (err) => {
