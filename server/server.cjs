@@ -222,6 +222,7 @@ const formatDuration = (seconds) => {
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+    console.log('TubeGenius Server v2.1 - Express 5 Fix Applied');
 });
 
 process.on('uncaughtException', (err) => {
