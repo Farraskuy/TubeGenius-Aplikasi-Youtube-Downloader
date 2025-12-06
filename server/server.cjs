@@ -3,7 +3,7 @@ const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001; // Use PORT env var for Render
 
 const ytDlpPath = path.join(__dirname, 'yt-dlp');
 
@@ -11,6 +11,9 @@ app.use(cors({
     exposedHeaders: ['Content-Disposition'],
 }));
 app.use(express.json());
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../dist')));
 
 const getVideoInfo = (url) => {
     return new Promise((resolve, reject) => {
@@ -189,6 +192,12 @@ app.get('/api/download', async (req, res) => {
             res.status(500).json({ error: 'Failed to start download' });
         }
     }
+});
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 const formatViews = (views) => {

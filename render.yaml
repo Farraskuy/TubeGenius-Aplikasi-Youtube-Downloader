@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: tubegenius
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3001
+    startCommand: node server/server.cjs
+    autoDeploy: true
