@@ -29,7 +29,7 @@ const App: React.FC = () => {
     const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
 
     try {
-      const response = await fetch(`http://localhost:3001/api/analyze?url=${encodeURIComponent(url)}`, {
+      const response = await fetch(`/api/analyze?url=${encodeURIComponent(url)}`, {
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -64,7 +64,7 @@ const App: React.FC = () => {
       const itagParam = option.itag ? `&itag=${option.itag}` : '';
       // Pass title to server for filename generation
       const titleParam = `&title=${encodeURIComponent(metadata.title)}`;
-      const downloadUrl = `http://localhost:3001/api/download?url=${encodeURIComponent(metadata.url)}&type=${option.type}${itagParam}${titleParam}`;
+      const downloadUrl = `/api/download?url=${encodeURIComponent(metadata.url)}&type=${option.type}${itagParam}${titleParam}`;
       
       // Try to parse size from option string (e.g. "15.5 MB") to bytes for progress fallback
       let estimatedSize = 0;
