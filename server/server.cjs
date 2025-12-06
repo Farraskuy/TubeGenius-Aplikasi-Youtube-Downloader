@@ -196,7 +196,8 @@ app.get('/api/download', async (req, res) => {
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('*', (req, res) => {
+// NOTE: Express 5 does not support '*' in string paths. Use regex /.*/ instead.
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
