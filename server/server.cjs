@@ -3,7 +3,7 @@ const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 3001; // Use PORT env var for Render
+const port = process.env.PORT || 8080; // Use PORT env var for Render/Fly
 
 const ytDlpPath = path.join(__dirname, 'yt-dlp');
 

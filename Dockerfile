@@ -5,6 +5,7 @@ FROM node:18-slim
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
+    ffmpeg \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -28,7 +29,7 @@ COPY . .
 RUN npm run build
 
 # Expose port
-EXPOSE 3001
+EXPOSE 8080
 
 # Start server
 CMD ["node", "server/server.cjs"]
