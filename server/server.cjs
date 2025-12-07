@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 8080; // Use PORT env var for Render/Fly
 
 const ytDlpPath = path.join(__dirname, 'yt-dlp');
-const cookiesPath = path.join(__dirname, '../cookies.txt');
+const cookiesPath = path.join(__dirname, 'cookies.txt');
 
 app.use(cors({
     exposedHeaders: ['Content-Disposition'],
@@ -106,6 +106,11 @@ app.get('/api/analyze', async (req, res) => {
         const videoFormats = new Map();
         const audioFormats = new Map();
 
+        // Debug: log formats before filtering
+        console.log('[Format Debug] Total formats after mapping:', formats.length);
+        const audioOnlyFormats = formats.filter(f => !f.hasVideo && f.hasAudio);
+        console.log('[Format Debug] Audio-only formats:', JSON.stringify(audioOnlyFormats, null, 2));
+
         formats.forEach(f => {
             if (f.hasVideo && f.container === 'mp4') {
                 const quality = f.quality;
@@ -115,8 +120,9 @@ app.get('/api/analyze', async (req, res) => {
                 if (!existing || (!existing.hasAudio && f.hasAudio)) {
                     videoFormats.set(quality, f);
                 }
-            } else if (!f.hasVideo && f.hasAudio) {
-                const quality = f.quality;
+            } else if (!f.hasVideo && f.hasAudio && (f.container === 'm4a' || f.container === 'webm')) {
+                // Better quality key for audio - use bitrate from quality or format_id
+                const quality = f.quality || f.itag || 'audio';
                 if (!audioFormats.has(quality)) {
                     audioFormats.set(quality, f);
                 }

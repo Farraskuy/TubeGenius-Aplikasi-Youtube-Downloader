@@ -105,7 +105,7 @@ const DownloadCard: React.FC<DownloadCardProps> = ({ metadata, onDownload, appSt
                   </div>
                   <div>
                     <div className="font-semibold text-white">{opt.quality}</div>
-                    <div className="text-xs text-gray-500">{opt.format} • {opt.size} Quality</div>
+                    <div className="text-xs text-gray-500">{opt.format} • {opt.size}</div>
                   </div>
                 </div>
                 
