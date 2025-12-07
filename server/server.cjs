@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 8080; // Use PORT env var for Render/Fly
 
 const ytDlpPath = path.join(__dirname, 'yt-dlp');
-const cookiesPath = path.join(__dirname, 'cookies.txt');
+const cookiesPath = path.join(__dirname, '../cookies.txt');
 
 app.use(cors({
     exposedHeaders: ['Content-Disposition'],

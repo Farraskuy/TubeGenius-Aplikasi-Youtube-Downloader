@@ -26,7 +26,7 @@ RUN npm install
 COPY . .
 
 # Add to project root
-COPY cookies.txt /app/cookies.txt
+COPY cookies.txt /cookies.txt
 
 # Build frontend
 RUN npm run build
