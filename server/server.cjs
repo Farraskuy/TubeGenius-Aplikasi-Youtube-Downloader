@@ -6,15 +6,23 @@ const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 8080; // Use PORT env var for Render/Fly
 
-const ytDlpPath = path.join(__dirname, 'yt-dlp');
-const cookiesPath = path.join(__dirname, '../cookies.txt');
+// Check for yt-dlp in multiple locations (Docker uses /usr/local/bin, local uses ./server/yt-dlp)
+const localYtDlp = path.join(__dirname, 'yt-dlp');
+const systemYtDlp = '/usr/local/bin/yt-dlp';
+const ytDlpPath = fs.existsSync(systemYtDlp) ? systemYtDlp : localYtDlp;
+
+// cookies.txt should be in project root (/app in Docker, or ../cookies.txt from server dir locally)
+const cookiesPath = path.resolve(__dirname, '../cookies.txt');
 
 app.use(cors({
     exposedHeaders: ['Content-Disposition'],
 }));
 app.use(express.json());
 
-// Serve static files from the React app
+// Log paths on startup for debugging
+console.log('[Server] yt-dlp path:', ytDlpPath);
+console.log('[Server] cookies path:', cookiesPath);
+console.log('[Server] cookies exists:', fs.existsSync(cookiesPath));
 app.use(express.static(path.join(__dirname, '../dist')));
 
 const getBaseArgs = () => {
